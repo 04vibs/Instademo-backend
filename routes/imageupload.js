@@ -21,19 +21,46 @@ const upload = multer({
 }).single('image')
 
 
-router.get('/images/:imagename',(req,res)=>{
+router.get('/images/get/:id',(req,res)=>{
    console.log('Inside get of image upload')
-   console.log(__dirname)
-    let imagename = req.params.imagename
-    let imagePath = "./images/" + imagename
-    console.log(imagePath);
-    let image = fs.readFileSync(imagePath)
-    let mime = fileType(image).mime
+   
+   Image.findAll({
+       where: {
+           userId: req.params.id
+       }
+   }).then((images)=>{
+    //    console.log('images======================', images);
+     //  console.log(images);
 
-    res.writeHead(200,{
-        'Content-Type': mime
-    })
-    res.end(image,'binary')
+   // console.log('images======================', images[1].dataValues.imagepath);
+    let imagesAll = []
+    const impagepaths=[]; 
+    // let buf = new Buffer();
+    // buf.
+    let mime;
+        for(let i = 0; i < images.length; i++){
+            let imagesname = images[i].dataValues.id
+            // console.log('Path : ',i + 1, images[i]);
+            let imagePath = images[i].dataValues.imagepath
+            impagepaths.push(imagePath)
+            let image = fs.readFileSync(imagePath)
+            mime = fileType(image).mime
+            imagesAll.push(image)
+        }
+       // console.log(imagePath);
+    //    for(let i = 0; i < imagesAll.length; i++){
+    //        res.send(imagesAll[i]);
+    //    }
+    //res.attachment(imagesAll.toString(),'Binary');
+    // res.writeHead(200,{
+    //     'Content-Type': mime
+    //    })
+       res.header("Content-Type", mime);
+       res.status(200).send(imagesAll)
+   }).catch((err)=>{
+       console.log(err);
+       err: err
+   })   
 })
 
 router.post('/images/upload/:id',(req,res)=>{
@@ -53,12 +80,10 @@ router.post('/images/upload/:id',(req,res)=>{
                 path: path,
                 
             })
-            console.log(path);
-        
-
-    Image.create({
-        userId : req.params.id,
-        imagepath : path,
+            console.log(path);      
+                Image.create({
+                    userId : req.params.id,
+                    imagepath : path,
 
     }).then((images)=>{
         console.log('Inside images create');
@@ -66,7 +91,7 @@ router.post('/images/upload/:id',(req,res)=>{
     }).catch((err)=>{
         err : 'cannnot post in db'
     })
-}
+        }
     })
 })
 
