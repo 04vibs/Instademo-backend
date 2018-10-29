@@ -28,6 +28,16 @@ const User = db.define('users',{
 
 })
 
+const image = db.define('images',{
+    imagepath:{
+        type: Sequelize.STRING,
+        allowNull: true,
+    }
+
+})
+
+image.belongsTo(User);
+
 db.sync({force: false}).then(() => {
     console.log('Database has been synced')
 }).catch((err) => {
@@ -35,5 +45,5 @@ db.sync({force: false}).then(() => {
 });
 
 module.exports = {
-    User
+    User,image
 }

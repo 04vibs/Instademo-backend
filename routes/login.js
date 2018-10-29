@@ -35,4 +35,22 @@ router.get('/:name',(req,res)=>{
     })
 })
 
+// image upload particular id
+
+// router.post('/:name/upload',(req,res)=>{
+//     console.log('Inside name of login');
+//     User.findOne({
+//         where:{
+//             name: req.params.name
+//         }
+//     }).then((username)=>{
+//         console.log(username);
+//         if(username == null){
+//             res.status(404).send('No such user exists')
+//         }
+//         res.status(200).send(username)
+//     }).catch((err)=>{
+//         error: 'could not found'
+//     })
+// })
 module.exports = router;

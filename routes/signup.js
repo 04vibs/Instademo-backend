@@ -17,7 +17,7 @@ router.post('/',(req,res)=>{
         res.status(201).send(users)
     }).catch((err)=>{
         console.log('Inside err of signup')
-        ress.status(501).send({
+        res.status(501).send({
             err: 'could not post'
         })
     })

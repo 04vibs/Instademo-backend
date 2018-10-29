@@ -2,11 +2,13 @@ const express = require('express');
 const multer = require('multer')
 const fileType = require('file-type')
 const fs = require('fs')
+const Image = require('../db').image
+const User = require('../db').User
 
 const router = express.Router()
 
 const upload = multer({
-    dest: '/instagram-demo/images',
+    dest: './images',
     limits: { fileSize: 100000000,files:1},
     fileFilter: (req,file,callback)=>{
         if (!file.originalname.match(/\.(jpg|jpeg)$/)) {
@@ -23,7 +25,7 @@ router.get('/images/:imagename',(req,res)=>{
    console.log('Inside get of image upload')
    console.log(__dirname)
     let imagename = req.params.imagename
-    let imagePath = __dirname + "/images/" + imagename
+    let imagePath = "./images/" + imagename
     console.log(imagePath);
     let image = fs.readFileSync(imagePath)
     let mime = fileType(image).mime
@@ -34,7 +36,8 @@ router.get('/images/:imagename',(req,res)=>{
     res.end(image,'binary')
 })
 
-router.post('/images/upload',(req,res)=>{
+router.post('/images/upload/:id',(req,res)=>{
+    console.log(req.params.id);
 
     upload(req,res,(err)=>{
         if(err) {
@@ -42,15 +45,28 @@ router.post('/images/upload',(req,res)=>{
                 message: err.message
             })
         } else {
-            let path = `../../instagram-demo/images/${req.file.filename}`
+            let path = `./images/${req.file.filename}`
             console.log('Inside image post');
+            
             res.status(200).json({
                 message: 'Image uploaded successfully !',
                 path: path,
                 
             })
             console.log(path);
-        }
+        
+
+    Image.create({
+        userId : req.params.id,
+        imagepath : path,
+
+    }).then((images)=>{
+        console.log('Inside images create');
+        
+    }).catch((err)=>{
+        err : 'cannnot post in db'
+    })
+}
     })
 })
 
