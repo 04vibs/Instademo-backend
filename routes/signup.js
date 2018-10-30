@@ -7,6 +7,7 @@ router.post('/',(req,res)=>{
     console.log('Inside signup');
     console.log(req.body.name)
     console.log(req.body.password)
+    console.log(req.body.email)
 
     User.create({
         name: req.body.name,
