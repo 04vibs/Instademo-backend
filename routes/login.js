@@ -14,26 +14,21 @@ router.get('/',(req,res)=>{
         err
     })
 })
+// login
+router.post('/',(req,res)=>{
 
-
-// particular id
-
-router.get('/:name',(req,res)=>{
-    console.log('Inside name of login');
-    User.findOne({
-        where:{
-            name: req.params.name
-        }
-    }).then((username)=>{
-        console.log(username);
-        if(username == null){
-            res.status(404).send('No such name exists')
-        }
-        res.status(200).send(username)
+    console.log('Inside users');
+    user = req.body;
+    User.findAll()
+    .then((users)=>{
+        index = users.findIndex(x => x.email === user.email && x.password === user.password);
+        res.status(200).send(users[index])
     }).catch((err)=>{
-        error: 'could not found'
+        err
     })
 })
+
+
 
 // image upload particular id
 

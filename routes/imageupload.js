@@ -65,13 +65,15 @@ router.get('/images/get/:id',(req,res)=>{
 
 router.post('/images/upload/:id',(req,res)=>{
     console.log(req.params.id);
-
     upload(req,res,(err)=>{
+        
         if(err) {
+                console.log(err);
             res.status(400).json({
                 message: err.message
             })
         } else {
+            debugger;
             let path = `./images/${req.file.filename}`
             console.log('Inside image post');
             
@@ -92,6 +94,7 @@ router.post('/images/upload/:id',(req,res)=>{
         err : 'cannnot post in db'
     })
         }
+        console.log('outside of else')
     })
 })
 
