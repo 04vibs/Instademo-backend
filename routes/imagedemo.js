@@ -8,8 +8,6 @@ const User = require('../db').User
 const router = express.Router()
 
 const upload = multer({
-    dest: './images',
-    limits: { fileSize: 100000000,files:1},
     fileFilter: (req,file,callback)=>{
         if (!file.originalname.match(/\.(jpg|jpeg)$/)) {
 
@@ -21,47 +19,6 @@ const upload = multer({
 }).single('image')
 
 
-router.get('/images/get/:id',(req,res)=>{
-   console.log('Inside get of image upload')
-   
-   Image.findAll({
-       where: {
-           userId: req.params.id
-       }
-   }).then((images)=>{
-    //    console.log('images======================', images);
-     //  console.log(images);
-
-   // console.log('images======================', images[1].dataValues.imagepath);
-    let imagesAll = []
-    const impagepaths=[]; 
-    // let buf = new Buffer();
-    // buf.
-    let mime;
-        for(let i = 0; i < images.length; i++){
-            let imagesname = images[i].dataValues.id
-            // console.log('Path : ',i + 1, images[i]);
-            let imagePath = images[i].dataValues.imagepath
-            impagepaths.push(imagePath)
-            let image = fs.readFileSync(imagePath)
-            mime = fileType(image).mime
-            imagesAll.push(image)
-        }
-       // console.log(imagePath);
-    //    for(let i = 0; i < imagesAll.length; i++){
-    //        res.send(imagesAll[i]);
-    //    }
-    //res.attachment(imagesAll.toString(),'Binary');
-    // res.writeHead(200,{
-    //     'Content-Type': mime
-    //    })
-       res.header("Content-Type", mime);
-       res.status(200).send(imagesAll)
-   }).catch((err)=>{
-       console.log(err);
-       err: err
-   })   
-})
 
 router.post('/images/upload/:id',(req,res)=>{
     console.log(req.params.id);
@@ -75,7 +32,8 @@ router.post('/images/upload/:id',(req,res)=>{
         } else {
             debugger;
             console.log(req.file);
-            let path = `./images/${req.file.originalname}`
+            let path = (req.file.buffer.toString('base64'));
+            console.log(path);
             console.log('Inside image post');
             
             res.status(200).json({
@@ -101,6 +59,24 @@ router.post('/images/upload/:id',(req,res)=>{
 
 
 
+
+router.get('/images/get/:id',(req,res)=>{
+    console.log('Inside get of image upload')
+    
+    Image.findAll({
+        where: {
+            userId: req.params.id
+        }
+    }).then((images)=>{
+     //    console.log('images======================', images);
+       console.log(images);
+        res.status(200).send(images)
+    }).catch((err)=>{
+        console.log(err);
+        err: err
+    })   
+ })
+ 
 router.use((err, req, res, next) => {
 
     if (err.code == 'ENOENT') {

@@ -30,7 +30,7 @@ const User = db.define('users',{
 
 const image = db.define('images',{
     imagepath:{
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT('long'),
         allowNull: true,
     }
 
@@ -38,7 +38,7 @@ const image = db.define('images',{
 
 image.belongsTo(User);
 
-db.sync({force: false}).then(() => {
+db.sync({force: true}).then(() => {
     console.log('Database has been synced')
 }).catch((err) => {
     console.log(err);
