@@ -38,7 +38,7 @@ const image = db.define('images',{
 
 image.belongsTo(User);
 
-db.sync({force: true}).then(() => {
+db.sync({force: false}).then(() => {
     console.log('Database has been synced')
 }).catch((err) => {
     console.log(err);
