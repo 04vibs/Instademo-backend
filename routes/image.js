@@ -1,7 +1,6 @@
 
 const jwt = require('jsonwebtoken');
 const express = require('express');
-const multer = require('multer')
 const fileType = require('file-type')
 const fs = require('fs')
 const Image = require('../db').image
@@ -9,60 +8,23 @@ const User = require('../db').User
 
 const router = express.Router()
 
-const upload = multer({
-    fileFilter: (req,file,callback)=>{
-        console.log('file=====================:', file);
-        if (!file.originalname.match(/\.(jpg|jpeg)$/)) {
-
-            return callback(new Error('Only Images are allowed !'), false)
-        }
-
-        callback(null, true);
-    }
-}).single('image')
-
-
 
 router.post('/images/upload/:id',ensureToken,(req,res)=>{
     
     if(false){        
         res.sendStatus(403).message('forbidden not a valid token');
-    }
-    else{
-        console.log('upload',req.token);
-        upload(req,res,(err)=>{     
-            if(err) {
-                    console.log(err);
-                    res.status(400).json({
-                    message: err.message 
-                    
-                })
-            } else {
-                debugger;
-                console.log('requested file ===',req.file);
-                let path = (req.file.buffer.toString('base64'));
-                console.log(path);
-                console.log('Inside image post');
-                
-                res.status(200).json({
-                    message: 'Image uploaded successfully !',
-                    path: path,
-                    
-                })
-                console.log(path);      
-                    Image.create({
-                        userId : req.params.id,
-                        imagepath : path,
-    
-        }).then((images)=>{
-            console.log('Inside images create');
-            
+    } else {
+        console.log('Inside post of image.js line 17');
+        Image.create({
+            imagepath: req.body.image,
+            userId: req.params.id
+        }).then((Images)=>{
+            console.log('Inside then of image post line 22');
+            res.status(200).send(Images)
         }).catch((err)=>{
-            err : 'cannnot post in db'
-        })
-            }
-            console.log('outside of else')
-        })
+            console.log(err);
+        })     
+        
     }
 })
 
