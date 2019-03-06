@@ -16,6 +16,9 @@ router.get('/',(req,res)=>{
        }
    })
 
+
+   //
+   //testing
    // login
 router.post('/',(req,res)=>{
     console.log('Inside users');
